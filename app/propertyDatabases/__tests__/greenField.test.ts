@@ -1,17 +1,16 @@
-import { DefaultPropertyDatabase } from '../defaultPropertyDatabase';
 import { PropertyDatabase } from '../propertyDatabase';
 import { EnvironmentPropertyLoader } from '../../propertyLoaders/environmentPropertyLoader';
 import { StaticPropertyLoader } from '../../propertyLoaders/staticPropertyLoader';
 
 test('single property can be retrieved', async () => {
-  let config: PropertyDatabase = new DefaultPropertyDatabase([]);
+  let config: PropertyDatabase = new PropertyDatabase([]);
   config.withPropertyLoader(new StaticPropertyLoader({ foo: 'bar' }));
   await config.loadProperties();
   expect(config.get('foo').asString()).toBe('bar');
 });
 
 test('single number property can be retrieved', async () => {
-  let config: PropertyDatabase = new DefaultPropertyDatabase([]);
+  let config: PropertyDatabase = new PropertyDatabase([]);
   config.withPropertyLoader(new StaticPropertyLoader({ foo: 5 }));
   await config.loadProperties();
   expect(config.get('foo').asString()).toBe('5');
@@ -19,7 +18,7 @@ test('single number property can be retrieved', async () => {
 });
 
 test('multiple properties dont collide', async () => {
-  let config: PropertyDatabase = new DefaultPropertyDatabase([]);
+  let config: PropertyDatabase = new PropertyDatabase([]);
   config.withPropertyLoader(new StaticPropertyLoader({ foo: 5, bar: 'bang' }));
   await config.loadProperties();
   expect(config.get('foo').asString()).toBe('5');
@@ -28,7 +27,7 @@ test('multiple properties dont collide', async () => {
 });
 
 test('multiple property sources dont collide', async () => {
-  let config: PropertyDatabase = new DefaultPropertyDatabase([]);
+  let config: PropertyDatabase = new PropertyDatabase([]);
   config
     .withPropertyLoader(new StaticPropertyLoader({ foo: 5 }))
     .whichOverrides(new StaticPropertyLoader({ bar: 'bang' }));
@@ -39,7 +38,7 @@ test('multiple property sources dont collide', async () => {
 });
 
 test('overriding property source overrides property', async () => {
-  let config: PropertyDatabase = new DefaultPropertyDatabase([]);
+  let config: PropertyDatabase = new PropertyDatabase([]);
   config
     .withPropertyLoader(new StaticPropertyLoader({ foo: 5, bar: 'test' }))
     .whichOverrides(new StaticPropertyLoader({ bar: 'bang' }));
@@ -50,14 +49,14 @@ test('overriding property source overrides property', async () => {
 });
 
 test('nested property can be retrieved', async () => {
-  let config: PropertyDatabase = new DefaultPropertyDatabase([]);
+  let config: PropertyDatabase = new PropertyDatabase([]);
   config.withPropertyLoader(new StaticPropertyLoader({ foo: { bar: 'test' } }));
   await config.loadProperties();
   expect(config.get('foo.bar').asString()).toBe('test');
 });
 
 test('nested property can be overridden', async () => {
-  let config: PropertyDatabase = new DefaultPropertyDatabase([]);
+  let config: PropertyDatabase = new PropertyDatabase([]);
   config
     .withPropertyLoader(new StaticPropertyLoader({ foo: { bar: 'test' } }))
     .whichOverrides(new StaticPropertyLoader({ foo: { bar: 'bang' } }));
@@ -66,7 +65,7 @@ test('nested property can be overridden', async () => {
 });
 
 test('env vars can override other vars', async () => {
-  let config: PropertyDatabase = new DefaultPropertyDatabase([]);
+  let config: PropertyDatabase = new PropertyDatabase([]);
   config
     .withPropertyLoader(new EnvironmentPropertyLoader({ FOO_BAR: 'thing' }))
     .whichOverrides(new StaticPropertyLoader({ foo: { bar: 'test' } }));
@@ -75,7 +74,7 @@ test('env vars can override other vars', async () => {
 });
 
 test('env vars wont override others if it is lower precedence', async () => {
-  let config: PropertyDatabase = new DefaultPropertyDatabase([]);
+  let config: PropertyDatabase = new PropertyDatabase([]);
   config
     .withPropertyLoader(new StaticPropertyLoader({ foo: { bar: 'test' } }))
     .whichOverrides(new EnvironmentPropertyLoader({ FOO_BAR: 'thing' }));
@@ -84,7 +83,7 @@ test('env vars wont override others if it is lower precedence', async () => {
 });
 
 test('getting object works', async () => {
-  let config: PropertyDatabase = new DefaultPropertyDatabase([]);
+  let config: PropertyDatabase = new PropertyDatabase([]);
   config
     .withPropertyLoader(new StaticPropertyLoader({ foo: { bar: 'test' } }))
     .whichOverrides(new EnvironmentPropertyLoader({ FOO_BAR: 'thing' }));
