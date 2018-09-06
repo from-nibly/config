@@ -15,8 +15,9 @@ export class DefaultPropertyDatabase implements PropertyDatabase {
   private propertySources: PropertySource[];
   private hasLoaded: boolean = false;
   private logger: DatabaseLogger;
+  private profiles: string[];
 
-  constructor(private profiles?: string[], private options?: DatabaseOptions) {
+  constructor(profiles?: string[], private options?: DatabaseOptions) {
     this.logger = {
       log: () => {},
       error: () => {},

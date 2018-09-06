@@ -72,7 +72,7 @@ export class FilePropertyLoader implements PropertyLoader {
     }
   }
 
-  loadFile(file: string): any | undefined {
+  loadFile(file: string): any {
     if (/.*\.json/.exec(file)) {
       return require(file);
     } else if (/.*\.(yaml|yml)/.exec(file)) {
