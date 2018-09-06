@@ -4,7 +4,6 @@ export class PropertyMeta {
     public key: string,
     public value: string,
     public loader: string,
-    public source: string,
     public meta: { [name: string]: string }
   ) {}
 

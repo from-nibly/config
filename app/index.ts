@@ -5,4 +5,3 @@ export {
 export { FilePropertyLoader } from './propertyLoaders/filePropertyLoader';
 export { PropertyLoader } from './propertyLoaders/propertyLoader';
 export { PropertySource } from './propertySources/propertySource';
-export { DefaultPropertySource } from './propertySources/defaultPropertySource';

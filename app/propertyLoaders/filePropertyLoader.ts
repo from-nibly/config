@@ -3,7 +3,6 @@ import * as path from 'path';
 import * as propReader from 'properties-reader';
 import * as readdir from 'recursive-readdir';
 import * as yamljs from 'yamljs';
-import { DefaultPropertySource } from './../propertySources/defaultPropertySource';
 import { PropertySource } from './../propertySources/propertySource';
 import { PropertyLoader } from './propertyLoader';
 
@@ -47,13 +46,10 @@ export class FilePropertyLoader implements PropertyLoader {
       });
     let rtn: PropertySource[] = [];
     for (let file of files) {
-      let source = new DefaultPropertySource(`File:${file}`);
+      let source = new PropertySource(`File:${file}`);
       let props: any = this.loadFile(file);
       if (props) {
-        let flattened = this.flattenProperties('', props);
-        flattened.forEach((prop: { key: string; value: string }) => {
-          source.setProperty(prop.key, prop.value, {});
-        });
+        source.setProperty('', props, {});
         rtn.push(source);
       }
     }
@@ -80,20 +76,5 @@ export class FilePropertyLoader implements PropertyLoader {
     } else if (/.*\.properties/.exec(file)) {
       return propReader(file);
     }
-  }
-
-  flattenProperties(outKey: string, obj: any): { key: string; value: string }[] {
-    let rtn: { key: string; value: string }[] = [];
-    for (let inKey of Object.keys(obj)) {
-      let n = outKey ? outKey + '.' + inKey : inKey;
-      if (Array.isArray(obj[inKey])) {
-        throw new Error('Arrays are not supported values');
-      } else if (typeof obj[inKey] === 'object') {
-        rtn = rtn.concat(this.flattenProperties(n, obj[inKey]));
-      } else {
-        rtn.push({ key: n.toLowerCase(), value: obj[inKey].toString() });
-      }
-    }
-    return rtn;
   }
 }

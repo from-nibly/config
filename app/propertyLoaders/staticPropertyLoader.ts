@@ -1,12 +1,11 @@
 import { PropertyLoader } from '../propertyLoaders/propertyLoader';
 import { PropertySource } from '../propertySources/propertySource';
-import { DefaultPropertySource } from './../propertySources/defaultPropertySource';
 
 export class StaticPropertyLoader implements PropertyLoader {
   constructor(private properties: any) {}
 
   public async loadProperties(profiles: string[]): Promise<PropertySource[]> {
-    let source = new DefaultPropertySource(`StaticProperties`);
+    let source = new PropertySource(`StaticProperties`);
     let flattened = this.flattenProperties('', this.properties);
     flattened.forEach((prop: { key: string; value: string }) => {
       source.setProperty(prop.key, prop.value, {});
