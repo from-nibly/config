@@ -1,6 +1,6 @@
 {
   "name": "@fromnibly/config",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "precedence ordered config with configurable inputs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
