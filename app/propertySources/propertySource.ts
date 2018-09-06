@@ -49,13 +49,7 @@ export class PropertySource {
     } else if (typeof obj === 'object' && !Array.isArray(obj)) {
       for (let inKey of Object.keys(obj)) {
         let n = outKey ? outKey + '.' + inKey : inKey;
-        if (Array.isArray(obj[inKey])) {
-          throw new Error('Arrays are not supported values');
-        } else if (typeof obj[inKey] === 'object') {
-          rtn = rtn.concat(this.flattenProperties(n, obj[inKey]));
-        } else {
-          rtn.push({ key: n.toLowerCase(), value: obj[inKey].toString() });
-        }
+        rtn = rtn.concat(this.flattenProperties(n, obj[inKey]));
       }
     } else {
       throw new Error(
