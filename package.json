@@ -1,0 +1,40 @@
+{
+  "name": "@fromnibly/config",
+  "version": "1.0.0",
+  "description": "precedence ordered config with configurable inputs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "url": "https://github.com:from-nibly/config"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/jest",
+    "install": "./node_modules/.bin/tsc",
+    "prepublish": "npm test"
+  },
+  "author": "thatoneemail@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "fs-extra": "^7.0.0",
+    "properties-reader": "0.0.16",
+    "recursive-readdir": "2.2.2",
+    "underscore.string": "3.3.4",
+    "yamljs": "0.3.0"
+  },
+  "node": "8.7.0",
+  "devDependencies": {
+    "prettier": "1.12.0",
+    "@types/recursive-readdir": "2.2.0",
+    "@types/express": "4.11.1",
+    "@types/node": "9.6.5",
+    "@types/properties-reader": "0.0.1",
+    "@types/underscore.string": "0.0.32",
+    "@types/winston": "2.3.9",
+    "@types/yamljs": "0.2.30",
+    "@types/jest": "23.3.1",
+    "@types/fs-extra": "^5.0.4",
+    "typescript": "3.0.3",
+    "jest": "23.5.0",
+    "ts-jest": "23.1.4"
+  }
+}

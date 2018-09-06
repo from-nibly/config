@@ -1,0 +1,8 @@
+.packageRevision
+nodew
+appw
+npmw
+installPrereq.sh
+.gitignore
+README.md
+./app/**/__tests__/*
