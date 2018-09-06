@@ -84,10 +84,16 @@ currently all leaf properties returned by `.asObject()` will be strings.
 
 ## Profiles
 
-Profiles allow you to scope different properties. Profiles must be supported by the individual PropertyLoader. For instance the FilePropertyLoader loads properties to a profile based on the name of the file ie. `application-dev.yml` would be given the `dev` profile. Using profiles limits when properties from certain sources become available. You set which properties should be loaded when creating the PropertyDatabase
+Profiles allow you to scope different properties. Profiles must be supported by the individual PropertyLoader. For instance the FilePropertyLoader loads properties to a profile based on the name of the file ie. `application-dev.yml` would be given the `dev` profile. Using profiles limits when properties from certain sources become available. You set which properties should be loaded when creating the PropertyDatabase.
 
 ```ts
 let config = new PropertyDatabase(['dev', 'local']);
+```
+
+However it is not really useful to hard code the profiles. Something like this is usually a good idea.
+
+```ts
+let config = new PropertyDatabase(process.env['CONFIG_PROFILES'].split(','));
 ```
 
 Properties in profiles specified later in the array will overwrite properties in profiles specified earlier in the array.
