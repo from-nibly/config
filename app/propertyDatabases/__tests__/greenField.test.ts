@@ -90,3 +90,15 @@ test('getting object works', async () => {
   await config.loadProperties();
   expect(config.get('foo').asObject()).toEqual({ bar: 'test' });
 });
+
+test('get as mapped works', async () => {
+  let config: PropertyDatabase = new PropertyDatabase([]);
+  config.withPropertyLoader(new StaticPropertyLoader({ foo: { bar: 5 } }));
+  await config.loadProperties();
+  expect(
+    config.get('foo').asMapped((obj: any) => {
+      obj.bar = parseInt(obj.bar);
+      return obj;
+    })
+  ).toEqual({ bar: 5 });
+});

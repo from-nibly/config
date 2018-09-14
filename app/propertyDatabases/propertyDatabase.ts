@@ -19,6 +19,7 @@ export interface PropertyContext {
   asString(): string;
   asNumber(): number;
   asObject(): any;
+  asMapped<T>(mapper: (obj: any) => T): T;
 }
 
 export class PropertyDatabase {
@@ -128,12 +129,14 @@ export class PropertyDatabase {
       },
       asNumber: () => {
         if (!this.properties[key]) {
-          throw new Error(`property ${key} does not exist as a string`);
+          throw new Error(`property ${key} does not exist as a number`);
         }
         return parseFloat(this.properties[key].value);
       },
-
       asObject: () => this.unrefPropertyAsObject(key),
+      asMapped: <T>(mapper: (obj: any) => T) => {
+        return mapper(this.unrefPropertyAsObject(key));
+      },
     };
   }
 
