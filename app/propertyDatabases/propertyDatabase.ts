@@ -20,6 +20,7 @@ export interface PropertyContext {
   asNumber(): number;
   asObject(): any;
   asMapped<T>(mapper: (obj: any) => T): T;
+  mapToArray<T>(mapper: (key: string, obj: any) => T): T[];
 }
 
 export class PropertyDatabase {
@@ -136,6 +137,10 @@ export class PropertyDatabase {
       asObject: () => this.unrefPropertyAsObject(key),
       asMapped: <T>(mapper: (obj: any) => T) => {
         return mapper(this.unrefPropertyAsObject(key));
+      },
+      mapToArray: <T>(mapper: (key: string, obj: any) => T) => {
+        let obj = this.unrefPropertyAsObject(key);
+        return Object.keys(obj).map(key => mapper(key, obj[key]));
       },
     };
   }
