@@ -2,6 +2,11 @@ import 'jest';
 import { PropertySource } from '../propertySource';
 import { PropertyMeta } from '../../property';
 
+test('should normalize keys that arent normal', () => {
+  let ps = new PropertySource('test');
+  expect(ps.normalizeKey('FOO_BAR')).toEqual('foo.bar');
+});
+
 test('setting number results in a string being set', () => {
   let ps = new PropertySource('test');
 
@@ -100,4 +105,18 @@ test('setting namespaced object with nested keys results in many properties bein
   expect(propertyMeta).toEqual(new PropertyMeta('foo.bar', '4', 'test', {}));
   expect(propertyMeta2).toEqual(new PropertyMeta('foo.bang.test', 'bazz', 'test', {}));
   expect(keys).toEqual(['foo.bang.test', 'foo.bar']);
+});
+
+test('setting namespaced object with nested mixed case keys results in many lowercased properties being set', () => {
+  let ps = new PropertySource('test');
+
+  ps.setProperty('Foo', { bAr: 4, baNG: { testIng: 'bazz' } }, {});
+  let keys = ps.getKeys();
+  keys.sort();
+
+  let propertyMeta = ps.getProperty('foo.bar');
+  let propertyMeta2 = ps.getProperty('foo.bang.testing');
+  expect(propertyMeta).toEqual(new PropertyMeta('foo.bar', '4', 'test', {}));
+  expect(propertyMeta2).toEqual(new PropertyMeta('foo.bang.testing', 'bazz', 'test', {}));
+  expect(keys).toEqual(['foo.bang.testing', 'foo.bar']);
 });

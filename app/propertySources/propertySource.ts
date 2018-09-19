@@ -12,24 +12,30 @@ export class PropertySource {
 
   setProperty(key: string, value: any, meta: { [name: string]: string }) {
     let overwrites = undefined;
-    key = key
-      .toLowerCase()
-      .split('_')
-      .join('.');
     let properties = this.flattenProperties(key, value);
 
+    key = this.normalizeKey(key);
+
     for (let prop of properties) {
-      if (this.properties[prop.key]) {
-        overwrites = this.properties[prop.key];
+      let propKey = this.normalizeKey(prop.key);
+      if (this.properties[propKey]) {
+        overwrites = this.properties[propKey];
       }
-      this.properties[prop.key] = new PropertyMeta(
-        prop.key,
+      this.properties[propKey] = new PropertyMeta(
+        propKey,
         prop.value.toString(),
         this.loader,
         meta
       );
-      this.properties[prop.key].overwrites = overwrites;
+      this.properties[propKey].overwrites = overwrites;
     }
+  }
+
+  normalizeKey(key: string): string {
+    return key
+      .toLowerCase()
+      .split('_')
+      .join('.');
   }
 
   getKeys(): string[] {
