@@ -17,6 +17,43 @@ test('single number property can be retrieved', async () => {
   expect(config.get('foo').asNumber()).toBe(5);
 });
 
+test('non-missing property will not use default', async () => {
+  let config: PropertyDatabase = new PropertyDatabase([]);
+  config.withPropertyLoader(new StaticPropertyLoader({ foo: { bar: '5' } }));
+  await config.loadProperties();
+  expect(config.get('foo').isSet()).toBe(true);
+  expect(config.get('foo.bar').isSet()).toBe(true);
+  expect(config.get('foo.bar').asString('default')).toBe('5');
+  expect(config.get('foo.bar').asNumber(10)).toBe(5);
+  expect(config.get('foo').asObject({ bazz: '10' })).toEqual({ bar: '5' });
+  expect(config.get('foo').asMapped(obj => parseInt(obj.bar), '10')).toBe(5);
+  expect(config.get('foo').mapToArray((key, obj) => obj, ['10'])).toEqual(['5']);
+});
+
+test('missing property can be defaulted', async () => {
+  let config: PropertyDatabase = new PropertyDatabase([]);
+  config.withPropertyLoader(new StaticPropertyLoader({ foo: 'test' }));
+  await config.loadProperties();
+  expect(config.get('bar').isSet()).toBe(false);
+  expect(config.get('bar').asString('default')).toBe('default');
+  expect(config.get('bar').asNumber(5)).toBe(5);
+  expect(config.get('bar').asObject({ bar: '5' })).toEqual({ bar: '5' });
+  expect(config.get('bar').asMapped(echo => echo, '5')).toBe('5');
+  expect(config.get('bar').mapToArray((key, obj) => obj, ['5'])).toEqual(['5']);
+});
+
+test('missing property with no default throws error', async () => {
+  let config: PropertyDatabase = new PropertyDatabase([]);
+  config.withPropertyLoader(new StaticPropertyLoader({ foo: 5 }));
+  await config.loadProperties();
+  expect(config.get('bar').isSet()).toBe(false);
+  expect(() => config.get('bar').asString()).toThrow();
+  expect(() => config.get('bar').asNumber()).toThrow();
+  expect(() => config.get('bar').asObject()).toThrow();
+  expect(() => config.get('bar').asMapped(echo => echo)).toThrow();
+  expect(() => config.get('bar').mapToArray((key, obj) => obj)).toThrow();
+});
+
 test('multiple properties dont collide', async () => {
   let config: PropertyDatabase = new PropertyDatabase([]);
   config.withPropertyLoader(new StaticPropertyLoader({ foo: 5, bar: 'bang' }));

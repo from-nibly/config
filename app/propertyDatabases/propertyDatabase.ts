@@ -1,6 +1,7 @@
 import { PropertyMeta } from '../property';
 import { PropertyLoader } from '../propertyLoaders/propertyLoader';
 import { PropertySource } from '../propertySources/propertySource';
+import { PropertyContext } from './propertyContext';
 
 export interface DatabaseOptions {
   logger?: DatabaseLogger;
@@ -13,14 +14,6 @@ export interface DatabaseLogger {
 
 export interface LoaderContext {
   whichOverrides(loader: PropertyLoader): LoaderContext;
-}
-
-export interface PropertyContext {
-  asString(): string;
-  asNumber(): number;
-  asObject(): any;
-  asMapped<T>(mapper: (obj: any) => T): T;
-  mapToArray<T>(mapper: (key: string, obj: any) => T): T[];
 }
 
 export class PropertyDatabase {
@@ -95,79 +88,14 @@ export class PropertyDatabase {
     }
   }
 
-  private traverseAndSet(obj: any, property: PropertyMeta) {
-    let nameParts: string[] = property.key.split('_');
-    let lastPart: string | undefined = nameParts.pop();
-    if (lastPart === undefined) {
-      return;
-    }
-    let currPart = nameParts.shift();
-    let currObj = obj;
-    while (currPart !== undefined) {
-      currObj[currPart] = currObj[currPart] || {};
-      currObj = currObj[currPart];
-      currPart = nameParts.shift();
-    }
-    currObj[lastPart] = property;
-  }
-
   get(key: string): PropertyContext {
     if (!this.hasLoaded) {
       throw new Error(
         'Property database has not loaded properties. To fix this call loadProperties()'
       );
     }
-    if (!Object.keys(this.properties).find(k => k.startsWith(key))) {
-      throw new Error(`property ${key} is not set`);
-    }
 
-    return {
-      asString: () => {
-        if (!this.properties[key]) {
-          throw new Error(`property ${key} does not exist as a string`);
-        }
-        return this.properties[key].value;
-      },
-      asNumber: () => {
-        if (!this.properties[key]) {
-          throw new Error(`property ${key} does not exist as a number`);
-        }
-        return parseFloat(this.properties[key].value);
-      },
-      asObject: () => this.unrefPropertyAsObject(key),
-      asMapped: <T>(mapper: (obj: any) => T) => {
-        return mapper(this.unrefPropertyAsObject(key));
-      },
-      mapToArray: <T>(mapper: (key: string, obj: any) => T) => {
-        let obj = this.unrefPropertyAsObject(key);
-        return Object.keys(obj).map(key => mapper(key, obj[key]));
-      },
-    };
-  }
-
-  private unrefPropertyAsObject(key: string): any {
-    let value: any = {};
-    let relevant = Object.keys(this.properties)
-      .filter(propKey => propKey.startsWith(key + '.'))
-      .map(propKey => this.properties[propKey]);
-
-    relevant.forEach(property =>
-      this.addProperty(value, this.stripPrefix(key, property.key).split('.'), property.value)
-    );
-    return value;
-  }
-
-  private addProperty(obj: any, path: string[], value: any) {
-    if (path.length === 1) {
-      obj[path[0]] = value;
-      return;
-    }
-    obj[path[0]] = obj[path[0]] || {};
-    this.addProperty(obj[path[0]], path.slice(1), value);
-  }
-
-  private stripPrefix(prefix: string, key: string) {
-    return key.slice(prefix.length + 1);
+    return new PropertyContext(key, this.properties);
   }
 
   //TODO allow for property name rewriting
