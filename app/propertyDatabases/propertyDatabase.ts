@@ -20,6 +20,7 @@ export interface PropertyContext {
   asNumber(): number;
   asObject(): any;
   asMapped<T>(mapper: (obj: any) => T): T;
+  isSet(): boolean;
   mapToArray<T>(mapper: (key: string, obj: any) => T): T[];
 }
 
@@ -117,32 +118,60 @@ export class PropertyDatabase {
         'Property database has not loaded properties. To fix this call loadProperties()'
       );
     }
-    if (!Object.keys(this.properties).find(k => k.startsWith(key))) {
-      throw new Error(`property ${key} is not set`);
-    }
 
     return {
-      asString: () => {
-        if (!this.properties[key]) {
+      asString: (def?: string) => {
+        if (!this.properties[key] && def === undefined) {
           throw new Error(`property ${key} does not exist as a string`);
+        } else if (!this.properties[key] && def !== undefined) {
+          return def;
+        } else {
+          return this.properties[key].value;
         }
-        return this.properties[key].value;
       },
-      asNumber: () => {
-        if (!this.properties[key]) {
+      asNumber: (def?: number) => {
+        if (!this.properties[key] && def === undefined) {
           throw new Error(`property ${key} does not exist as a number`);
+        } else if (!this.properties[key] && def !== undefined) {
+          return def;
+        } else {
+          return parseFloat(this.properties[key].value);
         }
-        return parseFloat(this.properties[key].value);
       },
-      asObject: () => this.unrefPropertyAsObject(key),
-      asMapped: <T>(mapper: (obj: any) => T) => {
-        return mapper(this.unrefPropertyAsObject(key));
+      asObject: (def?: any) => {
+        if (!this.hasPropertyRoot(key) && def === undefined) {
+          throw new Error(`property ${key} is not set`);
+        } else if (!this.hasPropertyRoot(key) && def !== undefined) {
+          return def;
+        } else {
+          return this.unrefPropertyAsObject(key);
+        }
       },
-      mapToArray: <T>(mapper: (key: string, obj: any) => T) => {
-        let obj = this.unrefPropertyAsObject(key);
-        return Object.keys(obj).map(key => mapper(key, obj[key]));
+      asMapped: <T>(mapper: (obj: any) => T, def?: T) => {
+        if (!this.hasPropertyRoot(key) && def === undefined) {
+          throw new Error(`property ${key} is not set`);
+        } else if (!this.hasPropertyRoot(key) && def !== undefined) {
+          return def;
+        } else {
+          return mapper(this.unrefPropertyAsObject(key));
+        }
+      },
+      isSet: () => this.properties[key] !== undefined || this.hasPropertyRoot(key),
+      mapToArray: <T>(mapper: (key: string, obj: any) => T, def?: T[]) => {
+        if (!this.hasPropertyRoot(key) && def === undefined) {
+          throw new Error(`property ${key} is not set`);
+        } else if (!this.hasPropertyRoot(key) && def !== undefined) {
+          return def;
+        } else {
+          let obj = this.unrefPropertyAsObject(key);
+          return Object.keys(obj).map(key => mapper(key, obj[key]));
+        }
       },
     };
+  }
+
+  private hasPropertyRoot(key: string): boolean {
+    return Object.keys(this.properties).find(k => k.startsWith(key + '.')) !== undefined;
   }
 
   private unrefPropertyAsObject(key: string): any {
