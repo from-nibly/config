@@ -26,8 +26,8 @@ test('non-missing property will not use default', async () => {
   expect(config.get('foo.bar').asString('default')).toBe('5');
   expect(config.get('foo.bar').asNumber(10)).toBe(5);
   expect(config.get('foo').asObject({ bazz: '10' })).toEqual({ bar: '5' });
-  expect(config.get('foo').asMapped(obj => parseInt(obj.bar), '10')).toBe(5);
-  expect(config.get('foo').mapToArray((key, obj) => obj, ['10'])).toEqual(['5']);
+  expect(config.get('foo').asMapped(obj => parseInt(obj.bar), 10)).toBe(5);
+  expect(config.get('foo').asMappedArray((key, obj) => obj, ['10'])).toEqual(['5']);
 });
 
 test('missing property can be defaulted', async () => {
@@ -39,7 +39,7 @@ test('missing property can be defaulted', async () => {
   expect(config.get('bar').asNumber(5)).toBe(5);
   expect(config.get('bar').asObject({ bar: '5' })).toEqual({ bar: '5' });
   expect(config.get('bar').asMapped(echo => echo, '5')).toBe('5');
-  expect(config.get('bar').mapToArray((key, obj) => obj, ['5'])).toEqual(['5']);
+  expect(config.get('bar').asMappedArray((key, obj) => obj, ['5'])).toEqual(['5']);
 });
 
 test('missing property with no default throws error', async () => {
@@ -51,7 +51,7 @@ test('missing property with no default throws error', async () => {
   expect(() => config.get('bar').asNumber()).toThrow();
   expect(() => config.get('bar').asObject()).toThrow();
   expect(() => config.get('bar').asMapped(echo => echo)).toThrow();
-  expect(() => config.get('bar').mapToArray((key, obj) => obj)).toThrow();
+  expect(() => config.get('bar').asMappedArray((key, obj) => obj)).toThrow();
 });
 
 test('multiple properties dont collide', async () => {
