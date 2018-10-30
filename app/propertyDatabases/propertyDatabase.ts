@@ -2,6 +2,7 @@ import { PropertyMeta } from '../property';
 import { PropertyLoader } from '../propertyLoaders/propertyLoader';
 import { PropertySource } from '../propertySources/propertySource';
 import { PropertyContext } from './propertyContext';
+import { Mapper, ArrayMapper } from './mapper';
 
 export interface DatabaseOptions {
   logger?: DatabaseLogger;
@@ -23,6 +24,8 @@ export class PropertyDatabase {
   private hasLoaded: boolean = false;
   private logger: DatabaseLogger;
   private profiles: string[];
+  private mappers: { [key: string]: Mapper<any> };
+  private arrayMappers: { [key: string]: ArrayMapper<any> };
 
   constructor(profiles?: string[], private options?: DatabaseOptions) {
     this.logger = {
@@ -34,6 +37,8 @@ export class PropertyDatabase {
     }
     this.profiles = profiles || [];
     this.loaders = [];
+    this.mappers = {};
+    this.arrayMappers = {};
   }
 
   use(loader: PropertyLoader): void {
@@ -95,7 +100,15 @@ export class PropertyDatabase {
       );
     }
 
-    return new PropertyContext(key, this.properties);
+    return new PropertyContext(key, this.properties, this.mappers[key], this.arrayMappers[key]);
+  }
+
+  registerMapper<T>(key: string, mapper: Mapper<T>) {
+    this.mappers[key] = mapper;
+  }
+
+  registerArrayMapper<T>(key: string, mapper: ArrayMapper<T>) {
+    this.arrayMappers[key] = mapper;
   }
 
   //TODO allow for property name rewriting

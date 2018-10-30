@@ -1,9 +1,15 @@
 import { PropertyMeta } from '../property';
+import { Mapper, ArrayMapper } from './mapper';
 
 type MapOf = { [key: string]: any };
 
 export class PropertyContext {
-  constructor(private key: string, private properties: { [name: string]: PropertyMeta }) {}
+  constructor(
+    private key: string,
+    private properties: { [name: string]: PropertyMeta },
+    private mapper: Mapper<any> | undefined,
+    private arrayMapper: ArrayMapper<any> | undefined
+  ) {}
 
   asString(def?: string): string {
     if (!this.properties[this.key] && def === undefined) {
@@ -14,6 +20,7 @@ export class PropertyContext {
       return this.properties[this.key].value;
     }
   }
+
   asNumber(def?: number): number {
     if (!this.properties[this.key] && def === undefined) {
       throw new Error(`property ${this.key} does not exist as a number`);
@@ -23,6 +30,7 @@ export class PropertyContext {
       return parseFloat(this.properties[this.key].value);
     }
   }
+
   asObject(def?: MapOf): MapOf {
     if (!this.hasPropertyRoot(this.key) && def === undefined) {
       throw new Error(`property ${this.key} is not set`);
@@ -32,13 +40,22 @@ export class PropertyContext {
       return this.unrefPropertyAsObject(this.key);
     }
   }
-  asMapped<T>(mapper: (obj: any) => T, def?: any): T {
+
+  asMapped<T>(mapper?: Mapper<T>, def?: T): T {
     if (!this.hasPropertyRoot(this.key) && def === undefined) {
       throw new Error(`property ${this.key} is not set`);
     } else if (!this.hasPropertyRoot(this.key) && def !== undefined) {
       return def;
     } else {
-      return mapper(this.unrefPropertyAsObject(this.key));
+      let map: Mapper<T>;
+      if (mapper !== undefined && mapper !== null) {
+        map = mapper;
+      } else if (this.mapper !== undefined && this.mapper !== null) {
+        map = this.mapper;
+      } else {
+        throw new Error(`Registered mapper for key ${this.key} not found and no mapper passed.`);
+      }
+      return map(this.unrefPropertyAsObject(this.key));
     }
   }
 
@@ -46,14 +63,22 @@ export class PropertyContext {
     return this.properties[this.key] !== undefined || this.hasPropertyRoot(this.key);
   }
 
-  mapToArray<T>(mapper: (key: string, obj: any) => T, def?: any[]): T[] {
+  asMappedArray<T>(arrayMapper?: (key: string, obj: any) => T, def?: T[]): T[] {
     if (!this.hasPropertyRoot(this.key) && def === undefined) {
       throw new Error(`property ${this.key} is not set`);
     } else if (!this.hasPropertyRoot(this.key) && def !== undefined) {
       return def;
     } else {
+      let map: ArrayMapper<T>;
+      if (arrayMapper !== undefined && arrayMapper !== null) {
+        map = arrayMapper;
+      } else if (this.arrayMapper !== undefined && this.arrayMapper !== null) {
+        map = this.arrayMapper;
+      } else {
+        throw new Error(`Registered mapper for key ${this.key} not found and no mapper passed.`);
+      }
       let obj = this.unrefPropertyAsObject(this.key);
-      return Object.keys(obj).map(key => mapper(key, obj[key]));
+      return Object.keys(obj).map(key => map(key, obj[key]));
     }
   }
 
