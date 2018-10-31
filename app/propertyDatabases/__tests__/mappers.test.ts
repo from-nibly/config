@@ -1,5 +1,4 @@
 import { PropertyDatabase } from '../propertyDatabase';
-import { EnvironmentPropertyLoader } from '../../propertyLoaders/environmentPropertyLoader';
 import { StaticPropertyLoader } from '../../propertyLoaders/staticPropertyLoader';
 
 class Foo {
