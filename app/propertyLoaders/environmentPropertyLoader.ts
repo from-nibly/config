@@ -11,7 +11,8 @@ export class EnvironmentPropertyLoader implements PropertyLoader {
   public async loadProperties(profiles: string[]): Promise<PropertySource[]> {
     let source = new PropertySource(`EnvironmentVariables`);
     Object.keys(this.envVars).forEach(key => {
-      source.setProperty(key, this.envVars[key], {});
+      let splitKey = key.split('_').join('.');
+      source.setProperty(splitKey, this.envVars[key], {});
     });
     return [source];
   }

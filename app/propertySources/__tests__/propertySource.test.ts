@@ -1,11 +1,11 @@
 import 'jest';
-import { PropertySource } from '../propertySource';
 import { PropertyMeta } from '../../property';
+import { PropertySource } from '../propertySource';
 
-test('should normalize keys that arent normal', () => {
-  let ps = new PropertySource('test');
-  expect(ps.normalizeKey('FOO_BAR')).toEqual('foo.bar');
-});
+// test('should normalize keys that arent normal', () => {
+//   let ps = new PropertySource('test');
+//   expect(ps.normalizeKey('FOO_BAR')).toEqual('foo.bar');
+// });
 
 test('setting number results in a string being set', () => {
   let ps = new PropertySource('test');

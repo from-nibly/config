@@ -1,5 +1,4 @@
 import { PropertyMeta } from '../property';
-import { resolve } from 'dns';
 
 export class PropertySource {
   private properties: { [name: string]: PropertyMeta } = {};
@@ -32,10 +31,7 @@ export class PropertySource {
   }
 
   normalizeKey(key: string): string {
-    return key
-      .toLowerCase()
-      .split('_')
-      .join('.');
+    return key.toLowerCase();
   }
 
   getKeys(): string[] {
