@@ -26,11 +26,11 @@
     "@types/yamljs": "0.2.30",
     "@types/fs-extra": "5.0.4",
     "@types/jest": "23.3.9",
+    "typescript": "3.1.6",
     "yamljs": "0.3.0"
   },
   "devDependencies": {
     "prettier": "1.15.2",
-    "typescript": "3.1.6",
     "jest": "23.6.0",
     "ts-jest": "23.10.4"
   }
