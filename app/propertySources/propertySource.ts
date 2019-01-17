@@ -40,6 +40,9 @@ export class PropertySource {
 
   private flattenProperties(outKey: string, obj: any): { key: string; value: string }[] {
     let rtn: { key: string; value: string }[] = [];
+    if (obj === undefined || obj === null) {
+      return rtn;
+    }
     if (typeof obj === 'string') {
       rtn.push({ key: outKey, value: obj });
     } else if (typeof obj === 'number') {

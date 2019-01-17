@@ -27,6 +27,19 @@ test('setting string results in a string being set', () => {
   expect(propertyMeta).toEqual(new PropertyMeta('foo', 'bar', 'test', {}));
 });
 
+test('setting undefined or null results in nothing being set', () => {
+  let ps = new PropertySource('test');
+
+  ps.setProperty('foo', null, {});
+  ps.setProperty('bar', undefined, {});
+
+  let propertyMetaNull = ps.getProperty('foo');
+  let propertyMetaUndefined = ps.getProperty('bar');
+
+  expect(propertyMetaNull).toEqual(undefined);
+  expect(propertyMetaUndefined).toEqual(undefined);
+});
+
 test('setting the same property twice results in the value of the second', () => {
   let ps = new PropertySource('test');
 
