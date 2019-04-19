@@ -31,6 +31,16 @@ export class PropertyContext {
     }
   }
 
+  asBoolean(def?: boolean): boolean {
+    if (!this.properties[this.key] && def === undefined) {
+      throw new Error(`property ${this.key} does not exist as a boolean`);
+    } else if (!this.properties[this.key] && def !== undefined) {
+      return def;
+    } else {
+      return this.properties[this.key].value.toLowerCase() === 'true';
+    }
+  }
+
   asObject(def?: MapOf): MapOf {
     if (!this.hasPropertyRoot(this.key) && def === undefined) {
       throw new Error(`property ${this.key} is not set`);
