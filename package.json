@@ -15,23 +15,23 @@
   "author": "thatoneemail@gmail.com",
   "license": "MIT",
   "dependencies": {
-    "fs-extra": "7.0.1",
-    "properties-reader": "0.0.16",
+    "fs-extra": "8.1.0",
+    "properties-reader": "0.3.1",
     "recursive-readdir": "2.2.2",
     "underscore.string": "3.3.5",
     "@types/recursive-readdir": "2.2.0",
-    "@types/node": "11.11.6",
+    "@types/node": "12.6.8",
     "@types/properties-reader": "0.0.1",
-    "@types/underscore.string": "0.0.36",
+    "@types/underscore.string": "0.0.38",
     "@types/yamljs": "0.2.30",
-    "@types/fs-extra": "5.0.5",
-    "@types/jest": "24.0.11",
-    "typescript": "3.3.4000",
+    "@types/fs-extra": "8.0.0",
+    "@types/jest": "24.0.15",
+    "typescript": "3.5.3",
     "yamljs": "0.3.0"
   },
   "devDependencies": {
-    "prettier": "1.16.4",
-    "jest": "24.5.0",
-    "ts-jest": "24.0.0"
+    "prettier": "1.18.2",
+    "jest": "24.8.0",
+    "ts-jest": "24.0.2"
   }
 }

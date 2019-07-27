@@ -1,8 +1,8 @@
 import { PropertyMeta } from '../property';
 import { PropertyLoader } from '../propertyLoaders/propertyLoader';
 import { PropertySource } from '../propertySources/propertySource';
+import { ArrayMapper, Mapper } from './mapper';
 import { PropertyContext } from './propertyContext';
-import { Mapper, ArrayMapper } from './mapper';
 
 export interface DatabaseOptions {
   logger?: DatabaseLogger;
@@ -25,7 +25,9 @@ export class PropertyDatabase {
   private logger: DatabaseLogger;
   private profiles: string[];
   private mappers: { [key: string]: Mapper<any> };
+  private rootMapper: Mapper<any>;
   private arrayMappers: { [key: string]: ArrayMapper<any> };
+  private rootArrayMapper: ArrayMapper<any>;
 
   constructor(profiles?: string[], private options?: DatabaseOptions) {
     this.logger = {
@@ -43,6 +45,20 @@ export class PropertyDatabase {
 
   use(loader: PropertyLoader): void {
     this.loaders.push(loader);
+  }
+
+  private getMapper<T>(key?: string): Mapper<T> {
+    if (!key) {
+      return this.rootMapper;
+    }
+    return this.mappers[key];
+  }
+
+  private getArrayMapper<T>(key?: string): ArrayMapper<T> {
+    if (!key) {
+      return this.rootArrayMapper;
+    }
+    return this.arrayMappers[key];
   }
 
   private whichOverrides(loader: PropertyLoader): LoaderContext {
@@ -93,14 +109,14 @@ export class PropertyDatabase {
     }
   }
 
-  get(key: string): PropertyContext {
+  get(key?: string): PropertyContext {
     if (!this.hasLoaded) {
       throw new Error(
         'Property database has not loaded properties. To fix this call loadProperties()'
       );
     }
 
-    return new PropertyContext(key, this.properties, this.mappers[key], this.arrayMappers[key]);
+    return new PropertyContext(key, this.properties, this.getMapper(key), this.getArrayMapper(key));
   }
 
   registerMapper<T>(key: string, mapper: Mapper<T>) {
