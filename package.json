@@ -25,13 +25,13 @@
     "@types/underscore.string": "0.0.38",
     "@types/yamljs": "0.2.30",
     "@types/fs-extra": "8.0.0",
-    "@types/jest": "24.0.15",
-    "typescript": "3.5.3",
+    "typescript": "3.9.5",
     "yamljs": "0.3.0"
   },
   "devDependencies": {
+    "@types/jest": "26.0.0",
+    "jest": "26.0.1",
     "prettier": "1.18.2",
-    "jest": "24.8.0",
-    "ts-jest": "24.0.2"
+    "ts-jest": "26.1.0"
   }
 }
