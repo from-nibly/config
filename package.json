@@ -9,8 +9,7 @@
   },
   "scripts": {
     "test": "./node_modules/.bin/jest",
-    "install": "./node_modules/.bin/tsc",
-    "prepublish": "npm test"
+    "prepublish": "npm test && ./node_modules/.bin/tsc"
   },
   "author": "thatoneemail@gmail.com",
   "license": "MIT",
@@ -19,19 +18,19 @@
     "properties-reader": "0.3.1",
     "recursive-readdir": "2.2.2",
     "underscore.string": "3.3.5",
-    "@types/recursive-readdir": "2.2.0",
-    "@types/node": "12.6.8",
-    "@types/properties-reader": "0.0.1",
-    "@types/underscore.string": "0.0.38",
-    "@types/yamljs": "0.2.30",
-    "@types/fs-extra": "8.0.0",
-    "typescript": "3.9.5",
     "yamljs": "0.3.0"
   },
   "devDependencies": {
-    "@types/jest": "26.0.0",
     "jest": "26.0.1",
     "prettier": "1.18.2",
-    "ts-jest": "26.1.0"
+    "ts-jest": "26.1.0",
+    "typescript": "3.9.5",
+    "@types/fs-extra": "8.0.0",
+    "@types/jest": "26.0.0",
+    "@types/node": "12.6.8",
+    "@types/properties-reader": "0.0.1",
+    "@types/recursive-readdir": "2.2.0",
+    "@types/underscore.string": "0.0.38",
+    "@types/yamljs": "0.2.30"
   }
 }

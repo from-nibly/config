@@ -1,8 +1,10 @@
 .packageRevision
 nodew
 appw
+app/
 npmw
 installPrereq.sh
 .gitignore
-README.md
-./app/**/__tests__/*
+jest.config.js
+tsconfig.json
+.prettierrc
